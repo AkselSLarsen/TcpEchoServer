@@ -2,35 +2,36 @@
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 
-namespace TcpEchoServer
-{
-    class Program
-    {
-        static void Main()
-        {
-            Console.WriteLine("This is the server");
-            TcpListener listener = new TcpListener(IPAddress.Loopback, 7);
-            listener.Start();
-            while (true)
-            {
-                Console.WriteLine("Server ready");
-                TcpClient socket = listener.AcceptTcpClient();
-                Console.WriteLine("Incoming client");
-                DoClient(socket);
+namespace TcpEchoServer {
+    public class Program {
+
+        public static IPAddress IP = IPAddress.Loopback;
+        public static int port = 7;
+
+        public static void Main() {
+            EchoServerSocket socket = new EchoServerSocket(IP, port);
+            socket.Run();
+        }
+        /*
+        private static string Reply(string message) {
+            if (message.Contains(":")) {
+                string[] vs = message.Split(":");
+                if (vs[0].ToLower().Contains("toupper")) {
+                    return vs[1].ToUpper();
+                } else if (vs[0].ToLower().Contains("tolower")) {
+                    return vs[1].ToLower();
+                } else if (vs[0].ToLower().Contains("reverse")) {
+                    string m = "";
+                    for (int i = vs[1].Length - 1; i >= 0; i--) {
+                        m += vs[1][i];
+                    }
+                    return m;
+                }
             }
+            return message;
         }
-
-        private static void DoClient(TcpClient socket)
-        {
-            NetworkStream ns = socket.GetStream();
-            StreamReader reader = new StreamReader(ns);
-            StreamWriter writer = new StreamWriter(ns);
-            string message = reader.ReadLine();
-            Console.WriteLine("Server received: " + message);
-            writer.Write(message);
-            writer.Flush();
-            socket.Close();
-        }
+        */
     }
 }
